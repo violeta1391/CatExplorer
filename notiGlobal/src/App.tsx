@@ -1,19 +1,17 @@
-import { Card, CardContent, Typography } from '@mui/material'
+import { Card, CardContent} from '@mui/material'
 import './App.css'
+import { CatTable } from './components/CatTable/CatTable'
 
 function App() {
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ Width: 1000 }}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            NotiGlobal
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
+          <div style={{ padding: "2rem" }}>
+            <h1>🐱 Cat Breeds</h1>
+            <CatTable />
+          </div>
         </CardContent>
       </Card>
     </>
