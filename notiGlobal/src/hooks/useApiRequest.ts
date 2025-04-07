@@ -10,36 +10,43 @@ interface Params<T> {
   error: ErrorType;
 }
 
-export const useApiRequest = <T>(url: string): Params<T> => {
-  const [data, setData] = useState<Data<T>>(null);
+type RequestInput = string | string[];
+
+export const useApiRequest = <T>(input: RequestInput): Params<T[]> => {
+  const [data, setData] = useState<Data<T[]>>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorType>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-
     setLoading(true);
 
-    axios
-      .get<T>(url, { signal: controller.signal })
-      .then((response) => {
-        setData(response.data);
-        setError(null);
-      })
-      .catch((err) => {
-        if (!axios.isCancel(err)) {
-          setError(err);
+    const fetchData = async () => {
+      try {
+        if (typeof input === "string") {
+          const response = await axios.get<T>(input, { signal: controller.signal });
+          setData([response.data]);
+        } else {
+          const requests = input.map((url) => axios.get<T>(url, { signal: controller.signal }));
+          const results = await Promise.all(requests);
+          setData(results.map((res) => res.data));
         }
-      })
-      .finally(() => {
+        setError(null);
+      } catch (err) {
+        if (!axios.isCancel(err)) {
+          setError(err as AxiosError);
+        }
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
 
     return () => {
       controller.abort();
     };
-  }, [url]);
+  }, [JSON.stringify(input)]); 
 
   return { data, loading, error };
 };
-

@@ -16,12 +16,15 @@ export const useSort = <T>(data: T[], sortKey: keyof T | null) => {
     });
   }, [data, key, order]);
 
-  const toggleSort = (newKey: keyof T) => {
+  const toggleSort = (newKey: keyof T): "asc" | "desc" => {
     if (key === newKey) {
-      setOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+      const newOrder = order === "asc" ? "desc" : "asc";
+      setOrder(newOrder);
+      return newOrder;
     } else {
       setKey(newKey);
       setOrder("asc");
+      return "asc";
     }
   };
 
