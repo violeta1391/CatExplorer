@@ -1,21 +1,19 @@
-import { Card, CardContent } from "@mui/material";
-import "./App.css";
-import { CatTable } from "./components/CatTable/CatTable";
 import { CatProvider } from "./context/CatContext";
+import { CatTable } from "./components/CatTable/CatTable";
 import { CatImageGallery } from "./components/CatImageGallery/CatImageGallery";
+import { ContainerLayout } from "./layout/ContainerLayout";
+import Filters from "./components/Filters/Filters";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
     <CatProvider>
-      <Card sx={{ width: 1000 }}>
-        <CardContent>
-          <div style={{ padding: "2rem" }}>
-            <h1>🐱 Cat Breeds</h1>
-            <CatImageGallery />
-            <CatTable />
-          </div>
-        </CardContent>
-      </Card>
+      <ContainerLayout>
+        <Header />
+        <Filters />
+        <CatImageGallery />
+        <CatTable />
+      </ContainerLayout>
     </CatProvider>
   );
 }

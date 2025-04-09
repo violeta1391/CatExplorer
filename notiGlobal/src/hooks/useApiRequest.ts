@@ -12,6 +12,8 @@ interface Params<T> {
 
 type RequestInput = string | string[];
 
+const API_KEY = import.meta.env.VITE_CAT_API_KEY;
+
 export const useApiRequest = <T>(input: RequestInput): Params<T[]> => {
   const [data, setData] = useState<Data<T[]>>(null);
   const [loading, setLoading] = useState(true);
@@ -24,10 +26,22 @@ export const useApiRequest = <T>(input: RequestInput): Params<T[]> => {
     const fetchData = async () => {
       try {
         if (typeof input === "string") {
-          const response = await axios.get<T>(input, { signal: controller.signal });
+          const response = await axios.get<T>(input, {
+            signal: controller.signal,
+            headers: {
+              "x-api-key": API_KEY,
+            },
+          });
           setData([response.data]);
         } else {
-          const requests = input.map((url) => axios.get<T>(url, { signal: controller.signal }));
+          const requests = input.map((url) =>
+            axios.get<T>(url, {
+              signal: controller.signal,
+              headers: {
+                "x-api-key": API_KEY,
+              },
+            })
+          );
           const results = await Promise.all(requests);
           setData(results.map((res) => res.data));
         }
@@ -46,7 +60,7 @@ export const useApiRequest = <T>(input: RequestInput): Params<T[]> => {
     return () => {
       controller.abort();
     };
-  }, [JSON.stringify(input)]); 
+  }, [JSON.stringify(input)]);
 
   return { data, loading, error };
 };
